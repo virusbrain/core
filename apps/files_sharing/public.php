@@ -144,15 +144,12 @@ if (isset($path)) {
 		OCP\Util::addScript('files', 'jquery.fileupload');
 		$maxUploadFilesize=OCP\Util::maxUploadFilesize($path);
 		$tmpl = new OCP\Template('files_sharing', 'public', 'base');
-		$tmpl->assign('uidOwner', $shareOwner);
 		$tmpl->assign('displayName', \OCP\User::getDisplayName($shareOwner));
 		$tmpl->assign('filename', $file);
 		$tmpl->assign('directory_path', $linkItem['file_target']);
 		$tmpl->assign('mimetype', \OC\Files\Filesystem::getMimeType($path));
-		$tmpl->assign('fileTarget', basename($linkItem['file_target']));
 		$tmpl->assign('dirToken', $linkItem['token']);
 		$tmpl->assign('sharingToken', $token);
-		$tmpl->assign('disableSharing', true);
 		$allowPublicUploadEnabled = (bool) ($linkItem['permissions'] & OCP\PERMISSION_CREATE);
 		if (OC_Appconfig::getValue('core', 'shareapi_allow_public_upload', 'yes') === 'no') {
 			$allowPublicUploadEnabled = false;
@@ -160,8 +157,6 @@ if (isset($path)) {
 		if ($linkItem['item_type'] !== 'folder') {
 			$allowPublicUploadEnabled = false;
 		}
-		$tmpl->assign('uploadMaxFilesize', $maxUploadFilesize);
-		$tmpl->assign('uploadMaxHumanFilesize', OCP\Util::humanFileSize($maxUploadFilesize));
 
 		$urlLinkIdentifiers= (isset($token)?'&t='.$token:'')
 							.(isset($_GET['dir'])?'&dir='.$_GET['dir']:'')
@@ -222,6 +217,9 @@ if (isset($path)) {
 			$maxUploadFilesize=OCP\Util::maxUploadFilesize($path);
 			$fileHeader = (!isset($files) or count($files) > 0);
 			$emptyContent = ($allowPublicUploadEnabled and !$fileHeader);
+
+			$freeSpace=OCP\Util::freeSpace($path);
+			$uploadLimit=OCP\Util::uploadLimit();
 			$folder = new OCP\Template('files', 'index', '');
 			$folder->assign('fileList', $list->fetchPage());
 			$folder->assign('breadcrumb', $breadcrumbNav->fetchPage());
@@ -234,6 +232,8 @@ if (isset($path)) {
 			$folder->assign('files', $files);
 			$folder->assign('uploadMaxFilesize', $maxUploadFilesize);
 			$folder->assign('uploadMaxHumanFilesize', OCP\Util::humanFileSize($maxUploadFilesize));
+			$folder->assign('freeSpace', $freeSpace);
+			$folder->assign('uploadLimit', $uploadLimit); // PHP upload limit
 			$folder->assign('allowZipDownload', intval(OCP\Config::getSystemValue('allowZipDownload', true)));
 			$folder->assign('usedSpacePercent', 0);
 			$folder->assign('fileHeader', $fileHeader);
