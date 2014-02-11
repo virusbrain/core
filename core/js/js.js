@@ -1110,6 +1110,9 @@ function relative_modified_date(timestamp) {
 }
 
 OC.Util = {
+	// TODO: remove original functions from global namespace
+	humanFileSize: humanFileSize,
+	formatDate: formatDate,
 	/**
 	 * Returns whether the browser supports SVG
 	 *
