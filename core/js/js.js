@@ -1109,6 +1109,9 @@ function relative_modified_date(timestamp) {
 	else { return t('core','years ago'); }
 }
 
+/**
+ * Utility functions
+ */
 OC.Util = {
 	// TODO: remove original functions from global namespace
 	humanFileSize: humanFileSize,
