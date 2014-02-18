@@ -11,6 +11,24 @@ if ($appConfig->getValue('core', 'shareapi_allow_links', 'yes') !== 'yes') {
 	exit();
 }
 
+<<<<<<< HEAD
+=======
+function determineIcon($file, $sharingRoot, $sharingToken) {
+	// for folders we simply reuse the files logic
+	if($file['type'] == 'dir') {
+		return \OCA\Files\Helper::determineIcon($file);
+	}
+
+	$relativePath = substr($file['path'], 6);
+	$relativePath = substr($relativePath, strlen($sharingRoot));
+	if($file['isPreviewAvailable']) {
+		return OCP\publicPreview_icon($relativePath, $sharingToken) . '&c=' . $file['etag'];
+	}
+	$icon = OCP\mimetype_icon($file['mimetype']);
+	return substr($icon, 0, -3) . 'svg';
+}
+
+>>>>>>> Fixed file list sorting
 if (isset($_GET['t'])) {
 	$token = $_GET['t'];
 	$linkItem = OCP\Share::getShareByToken($token, false);
