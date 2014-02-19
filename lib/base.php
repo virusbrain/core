@@ -462,7 +462,7 @@ class OC {
 		
 		//authentification fix (Lightning CalDAV etc.)
 		if (isset($_SERVER['REDIRECT_REMOTE_USER']) && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_REMOTE_USER'], $matches)) {
-		   list($name, $password) = explode(':', base64_decode($matches[1]));
+		   list($name, $password) = explode(':', base64_decode($matches[1]), 2);
 		   $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
 		   $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
 		}
