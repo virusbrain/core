@@ -8,7 +8,6 @@ $TRANSLATIONS = array(
 "Users" => "Uživatelé",
 "Admin" => "Administrace",
 "Failed to upgrade \"%s\"." => "Selhala aktualizace verze \"%s\".",
-"Custom profile pictures don't work with encryption yet" => "Vlastní profilové obrázky zatím nefungují v kombinaci se šifrováním",
 "Unknown filetype" => "Neznámý typ souboru",
 "Invalid image" => "Chybný obrázek",
 "web services under your control" => "webové služby pod Vaší kontrolou",
@@ -17,7 +16,7 @@ $TRANSLATIONS = array(
 "Files need to be downloaded one by one." => "Soubory musí být stahovány jednotlivě.",
 "Back to Files" => "Zpět k souborům",
 "Selected files too large to generate zip file." => "Vybrané soubory jsou příliš velké pro vytvoření ZIP souboru.",
-"Download the files in smaller chunks, seperately or kindly ask your administrator." => "Stáhněte soubory po menších částech, samostatně, nebo se obraťte na správce.",
+"Please download the files separately in smaller chunks or kindly ask your administrator." => "Prosím stáhněte soubory odděleně po menších množstvích nebo požádejte vašeho správce.",
 "No source specified when installing app" => "Nebyl zadán zdroj při instalaci aplikace",
 "No href specified when installing app from http" => "Nebyl zadán odkaz pro instalaci aplikace z HTTP",
 "No path specified when installing app from local file" => "Nebyla zadána cesta pro instalaci aplikace z místního souboru",
@@ -66,7 +65,6 @@ $TRANSLATIONS = array(
 "last month" => "minulý měsíc",
 "_%n month ago_::_%n months ago_" => array("před %n měsícem","před %n měsíci","před %n měsíci"),
 "last year" => "minulý rok",
-"years ago" => "před lety",
-"Caused by:" => "Příčina:"
+"years ago" => "před lety"
 );
 $PLURAL_FORMS = "nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;";

@@ -28,8 +28,8 @@
 class OC_Files {
 	static $tmpFiles = array();
 
-	static public function getFileInfo($path){
-		return \OC\Files\Filesystem::getFileInfo($path);
+	static public function getFileInfo($path, $includeMountPoints = true){
+		return \OC\Files\Filesystem::getFileInfo($path, $includeMountPoints);
 	}
 
 	static public function getDirectoryContent($path){
@@ -40,7 +40,7 @@ class OC_Files {
 	 * return the content of a file or return a zip file containing multiple files
 	 *
 	 * @param string $dir
-	 * @param string $file ; separated list of files to download
+	 * @param string $files ; separated list of files to download
 	 * @param boolean $only_header ; boolean to only send header of the request
 	 */
 	public static function get($dir, $files, $only_header = false) {
@@ -83,7 +83,7 @@ class OC_Files {
 			if ($basename) {
 				$name = $basename . '.zip';
 			} else {
-				$name = 'owncloud.zip';
+				$name = 'download.zip';
 			}
 			
 			set_time_limit($executionTime);
@@ -109,15 +109,13 @@ class OC_Files {
 			$zip = false;
 			$filename = $dir . '/' . $files;
 			$name = $files;
+			if ($xsendfile && OC_App::isEnabled('files_encryption')) {
+				$xsendfile = false;
+			}
 		}
 		OC_Util::obEnd();
 		if ($zip or \OC\Files\Filesystem::isReadable($filename)) {
-			if ( preg_match( "/MSIE/", $_SERVER["HTTP_USER_AGENT"] ) ) {
-				header( 'Content-Disposition: attachment; filename="' . rawurlencode($name) . '"' );
-			} else {
-				header( 'Content-Disposition: attachment; filename*=UTF-8\'\'' . rawurlencode($name)
-													 . '; filename="' . rawurlencode($name) . '"' );
-			}
+			OC_Response::setContentDispositionHeader($name, 'attachment');
 			header('Content-Transfer-Encoding: binary');
 			OC_Response::disableCaching();
 			if ($zip) {
@@ -131,9 +129,11 @@ class OC_Files {
 				if ($filesize > -1) {
 					header("Content-Length: ".$filesize);
 				}
-				list($storage) = \OC\Files\Filesystem::resolvePath($filename);
-				if ($storage instanceof \OC\Files\Storage\Local) {
-					self::addSendfileHeader(\OC\Files\Filesystem::getLocalFile($filename));
+				if ($xsendfile) {
+					list($storage) = \OC\Files\Filesystem::resolvePath(\OC\Files\Filesystem::getView()->getAbsolutePath($filename));
+					if ($storage->isLocal()) {
+						self::addSendfileHeader(\OC\Files\Filesystem::getLocalFile($filename));
+					}
 				}
 			}
 		} elseif ($zip or !\OC\Files\Filesystem::file_exists($filename)) {
@@ -170,6 +170,9 @@ class OC_Files {
 		}
 	}
 
+	/**
+	 * @param false|string $filename
+	 */
 	private static function addSendfileHeader($filename) {
 		if (isset($_SERVER['MOD_X_SENDFILE_ENABLED'])) {
 			header("X-Sendfile: " . $filename);
@@ -194,6 +197,10 @@ class OC_Files {
 		}
 	}
 
+	/**
+	 * @param string $dir
+	 * @param ZipArchive $zip
+	 */
 	public static function zipAddDir($dir, $zip, $internalDir='') {
 		$dirname=basename($dir);
 		$zip->addEmptyDir($internalDir.$dirname);
@@ -215,7 +222,7 @@ class OC_Files {
 	/**
 	 * checks if the selected files are within the size constraint. If not, outputs an error page.
 	 *
-	 * @param dir   $dir
+	 * @param string   $dir
 	 * @param files $files
 	 */
 	static function validateZipDownload($dir, $files) {
@@ -251,7 +258,7 @@ class OC_Files {
 				header("HTTP/1.0 409 Conflict");
 				OC_Template::printErrorPage(
 						$l->t('Selected files too large to generate zip file.'),
-						$l->t('Download the files in smaller chunks, seperately or kindly ask your administrator.')
+						$l->t('Please download the files separately in smaller chunks or kindly ask your administrator.')
 						.'<br/><a href="javascript:history.back()">'
 						. $l->t('Back to Files') . '</a>'
 				);

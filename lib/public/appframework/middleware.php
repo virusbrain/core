@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ownCloud - App Framework
  *
@@ -21,9 +20,14 @@
  *
  */
 
+/**
+ * Public interface of ownCloud for apps to use.
+ * AppFramework\Middleware class
+ */
 
 namespace OCP\AppFramework;
 
+use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Response;
 
 

@@ -12,7 +12,7 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Cache\QueryCacheProfile;
 use Doctrine\Common\EventManager;
 
-class Connection extends \Doctrine\DBAL\Connection implements \OCP\IDBConnection {
+class Connection extends \Doctrine\DBAL\Connection {
 	/**
 	 * @var string $tablePrefix
 	 */
@@ -94,7 +94,7 @@ class Connection extends \Doctrine\DBAL\Connection implements \OCP\IDBConnection
 	 * If an SQLLogger is configured, the execution is logged.
 	 *
 	 * @param string $query The SQL query to execute.
-	 * @param array $params The parameters to bind to the query, if any.
+	 * @param string[] $params The parameters to bind to the query, if any.
 	 * @param array $types The types the previous parameters are in.
 	 * @param QueryCacheProfile $qcp
 	 * @return \Doctrine\DBAL\Driver\Statement The executed statement.

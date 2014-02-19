@@ -7,6 +7,14 @@
  *
  */
 
+/**
+ * Public interface of ownCloud for apps to use.
+ * L10n interface
+ *
+ */
+
+// use OCP namespace for all classes that are considered public.
+// This means that they should be used by apps instead of the internal ownCloud classes
 namespace OCP;
 
 /**
@@ -14,10 +22,10 @@ namespace OCP;
  */
 interface IL10N {
 	/**
-	 * @brief Translating
+	 * Translating
 	 * @param $text String The text we need a translation for
 	 * @param array $parameters default:array() Parameters for sprintf
-	 * @return \OC_L10N_String|string Translation or the same text
+	 * @return \OC_L10N_String Translation or the same text
 	 *
 	 * Returns the translation. If no translation is found, $text will be
 	 * returned.
@@ -25,12 +33,12 @@ interface IL10N {
 	public function t($text, $parameters = array());
 
 	/**
-	 * @brief Translating
+	 * Translating
 	 * @param $text_singular String the string to translate for exactly one object
 	 * @param $text_plural String the string to translate for n objects
 	 * @param $count Integer Number of objects
 	 * @param array $parameters default:array() Parameters for sprintf
-	 * @return \OC_L10N_String|string Translation or the same text
+	 * @return \OC_L10N_String Translation or the same text
 	 *
 	 * Returns the translation. If no translation is found, $text will be
 	 * returned. %n will be replaced with the number of objects.
@@ -42,10 +50,10 @@ interface IL10N {
 	public function n($text_singular, $text_plural, $count, $parameters = array());
 
 	/**
-	 * @brief Localization
+	 * Localization
 	 * @param $type Type of localization
 	 * @param $params parameters for this localization
-	 * @returns String or false
+	 * @return String or false
 	 *
 	 * Returns the localized data.
 	 *

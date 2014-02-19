@@ -7,8 +7,15 @@
  */
 
 class OC_Request {
+
+	const USER_AGENT_IE = '/MSIE/';
+	// Android Chrome user agent: https://developers.google.com/chrome/mobile/docs/user-agent
+	const USER_AGENT_ANDROID_MOBILE_CHROME = '#Android.*Chrome/[.0-9]*#';
+	const USER_AGENT_FREEBOX = '#^Mozilla/5\.0$#';
+
 	/**
 	 * @brief Check overwrite condition
+	 * @param string $type
 	 * @returns bool
 	 */
 	private static function isOverwriteCondition($type = '') {
@@ -80,6 +87,7 @@ class OC_Request {
 	 *
 	 * Returns the request uri, even if the website uses one or more
 	 * reverse proxies
+	 * @return string
 	 */
 	public static function requestUri() {
 		$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
@@ -91,7 +99,7 @@ class OC_Request {
 
 	/**
 	 * @brief Returns the script name
-	 * @returns string the script name
+	 * @return string the script name
 	 *
 	 * Returns the script name, even if the website uses one or more
 	 * reverse proxies
@@ -99,7 +107,7 @@ class OC_Request {
 	public static function scriptName() {
 		$name = $_SERVER['SCRIPT_NAME'];
 		if (OC_Config::getValue('overwritewebroot', '') !== '' and self::isOverwriteCondition()) {
-			$serverroot = str_replace("\\", '/', substr(__DIR__, 0, -4));
+			$serverroot = str_replace("\\", '/', substr(__DIR__, 0, -strlen('lib/private/')));
 			$suburi = str_replace("\\", "/", substr(realpath($_SERVER["SCRIPT_FILENAME"]), strlen($serverroot)));
 			$name = OC_Config::getValue('overwritewebroot', '') . $suburi;
 		}
@@ -108,7 +116,7 @@ class OC_Request {
 
 	/**
 	 * @brief get Path info from request
-	 * @returns string Path info or false when not found
+	 * @return string Path info or false when not found
 	 */
 	public static function getPathInfo() {
 		if (array_key_exists('PATH_INFO', $_SERVER)) {
@@ -132,20 +140,48 @@ class OC_Request {
 
 	/**
 	 * @brief get Path info from request, not urldecoded
-	 * @returns string Path info or false when not found
+	 * @return string Path info or false when not found
 	 */
 	public static function getRawPathInfo() {
-		$path_info = substr($_SERVER['REQUEST_URI'], strlen($_SERVER['SCRIPT_NAME']));
-		// Remove the query string from REQUEST_URI
-		if ($pos = strpos($path_info, '?')) {
-			$path_info = substr($path_info, 0, $pos);
+		$requestUri = $_SERVER['REQUEST_URI'];
+		// remove too many leading slashes - can be caused by reverse proxy configuration
+		if (strpos($requestUri, '/') === 0) {
+			$requestUri = '/' . ltrim($requestUri, '/');
 		}
-		return $path_info;
+
+		// Remove the query string from REQUEST_URI
+		if ($pos = strpos($requestUri, '?')) {
+			$requestUri = substr($requestUri, 0, $pos);
+		}
+
+		$scriptName = $_SERVER['SCRIPT_NAME'];
+		$path_info = $requestUri;
+
+		// strip off the script name's dir and file name
+		list($path, $name) = \Sabre_DAV_URLUtil::splitPath($scriptName);
+		if (!empty($path)) {
+			if( $path === $path_info || strpos($path_info, $path.'/') === 0) {
+				$path_info = substr($path_info, strlen($path));
+			} else {
+				throw new Exception("The requested uri($requestUri) cannot be processed by the script '$scriptName')");
+			}
+		}
+		if (strpos($path_info, '/'.$name) === 0) {
+			$path_info = substr($path_info, strlen($name) + 1);
+		}
+		if (strpos($path_info, $name) === 0) {
+			$path_info = substr($path_info, strlen($name));
+		}
+		if($path_info === '/'){
+			return '';
+		} else {
+			return $path_info;
+		}
 	}
 
 	/**
 	 * @brief Check if this is a no-cache request
-	 * @returns boolean true for no-cache
+	 * @return boolean true for no-cache
 	 */
 	static public function isNoCache() {
 		if (!isset($_SERVER['HTTP_CACHE_CONTROL'])) {
@@ -156,7 +192,7 @@ class OC_Request {
 
 	/**
 	 * @brief Check if the requestor understands gzip
-	 * @returns boolean true for gzip encoding supported
+	 * @return boolean true for gzip encoding supported
 	 */
 	static public function acceptGZip() {
 		if (!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) {
@@ -172,7 +208,7 @@ class OC_Request {
 
 	/**
 	 * @brief Check if the requester sent along an mtime
-	 * @returns false or an mtime
+	 * @return false or an mtime
 	 */
 	static public function hasModificationTime () {
 		if (isset($_SERVER['HTTP_X_OC_MTIME'])) {
@@ -180,5 +216,23 @@ class OC_Request {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Checks whether the user agent matches a given regex
+	 * @param string|array $agent agent name or array of agent names
+	 * @return boolean true if at least one of the given agent matches,
+	 * false otherwise
+	 */
+	static public function isUserAgent($agent) {
+		if (!is_array($agent)) {
+			$agent = array($agent);
+		}
+		foreach ($agent as $regex) {
+			if (preg_match($regex, $_SERVER['HTTP_USER_AGENT'])) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

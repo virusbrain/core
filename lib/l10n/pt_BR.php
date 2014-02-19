@@ -8,7 +8,6 @@ $TRANSLATIONS = array(
 "Users" => "Usuários",
 "Admin" => "Admin",
 "Failed to upgrade \"%s\"." => "Falha na atualização de \"%s\".",
-"Custom profile pictures don't work with encryption yet" => "Fotos de perfil personalizados ainda não funcionam com criptografia",
 "Unknown filetype" => "Tipo de arquivo desconhecido",
 "Invalid image" => "Imagem inválida",
 "web services under your control" => "serviços web sob seu controle",
@@ -17,7 +16,7 @@ $TRANSLATIONS = array(
 "Files need to be downloaded one by one." => "Arquivos precisam ser baixados um de cada vez.",
 "Back to Files" => "Voltar para Arquivos",
 "Selected files too large to generate zip file." => "Arquivos selecionados são muito grandes para gerar arquivo zip.",
-"Download the files in smaller chunks, seperately or kindly ask your administrator." => "Baixe os arquivos em pedaços menores, separadamente ou solicite educadamente  ao seu administrador.",
+"Please download the files separately in smaller chunks or kindly ask your administrator." => "Por favor baixe os arquivos separadamente em pedaços ou educadamente pergunte ao seu administrador.",
 "No source specified when installing app" => "Nenhuma fonte foi especificada enquanto instalava o aplicativo",
 "No href specified when installing app from http" => "Nenhuma href foi especificada enquanto instalava o aplicativo de httml",
 "No path specified when installing app from local file" => "Nenhum caminho foi especificado enquanto instalava o aplicativo do arquivo local",
@@ -66,7 +65,6 @@ $TRANSLATIONS = array(
 "last month" => "último mês",
 "_%n month ago_::_%n months ago_" => array("","ha %n meses"),
 "last year" => "último ano",
-"years ago" => "anos atrás",
-"Caused by:" => "Causados ​​por:"
+"years ago" => "anos atrás"
 );
 $PLURAL_FORMS = "nplurals=2; plural=(n > 1);";

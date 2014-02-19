@@ -54,6 +54,9 @@ class OC_User {
 
 	private static $_setupedBackends = array();
 
+	// bool, stores if a user want to access a resource anonymously, e.g if he opens a public link
+	private static $incognitoMode = false;
+
 	/**
 	 * @brief registers backend
 	 * @param string $backend name of the backend
@@ -187,17 +190,31 @@ class OC_User {
 	public static function deleteUser($uid) {
 		$user = self::getManager()->get($uid);
 		if ($user) {
-			$user->delete();
+			$result = $user->delete();
 
-			// We have to delete the user from all groups
-			foreach (OC_Group::getUserGroups($uid) as $i) {
-				OC_Group::removeFromGroup($uid, $i);
+			// if delete was successful we clean-up the rest
+			if ($result) {
+
+				// We have to delete the user from all groups
+				foreach (OC_Group::getUserGroups($uid) as $i) {
+					OC_Group::removeFromGroup($uid, $i);
+				}
+				// Delete the user's keys in preferences
+				OC_Preferences::deleteUser($uid);
+
+				// Delete user files in /data/
+				OC_Helper::rmdirr(\OC_User::getHome($uid));
+
+				// Delete the users entry in the storage table
+				\OC\Files\Cache\Storage::remove('home::' . $uid);
+
+				// Remove it from the Cache
+				self::getManager()->delete($uid);
 			}
-			// Delete the user's keys in preferences
-			OC_Preferences::deleteUser($uid);
 
-			// Delete user files in /data/
-			OC_Helper::rmdirr(OC_Config::getValue('datadirectory', OC::$SERVERROOT . '/data') . '/' . $uid . '/');
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -205,7 +222,7 @@ class OC_User {
 	 * @brief Try to login a user
 	 * @param $uid The username of the user to log in
 	 * @param $password The password of the user
-	 * @return bool
+	 * @return boolean|null
 	 *
 	 * Log in a user and regenerate a new session - if the password is ok
 	 */
@@ -232,6 +249,8 @@ class OC_User {
 			session_regenerate_id(true);
 			self::setUserId($uid);
 			self::setDisplayName($uid);
+			self::getUserSession()->setLoginName($uid);
+
 			OC_Hook::emit( "OC_User", "post_login", array( "uid" => $uid, 'password'=>'' ));
 			return true;
 		}
@@ -271,6 +290,7 @@ class OC_User {
 
 	/**
 	 * @brief Sets user display name for session
+	 * @param string $uid
 	 */
 	public static function setDisplayName($uid, $displayName = null) {
 		if (is_null($displayName)) {
@@ -300,12 +320,21 @@ class OC_User {
 	 * Checks if the user is logged in
 	 */
 	public static function isLoggedIn() {
-		if (\OC::$session->get('user_id')) {
+		if (\OC::$session->get('user_id') && self::$incognitoMode === false) {
 			OC_App::loadApps(array('authentication'));
 			self::setupBackends();
 			return self::userExists(\OC::$session->get('user_id'));
 		}
 		return false;
+	}
+
+	/**
+	 * @brief set incognito mode, e.g. if a user wants to open a public link
+	 * @param bool $status
+	 */
+	public static function setIncognitoMode($status) {
+		self::$incognitoMode = $status;
+
 	}
 
 	/**
@@ -321,7 +350,7 @@ class OC_User {
 			return $backend->getLogoutAttribute();
 		}
 
-		return "href=" . link_to('', 'index.php') . "?logout=true";
+		return 'href="' . link_to('', 'index.php') . '?logout=true"';
 	}
 
 	/**
@@ -330,7 +359,7 @@ class OC_User {
 	 * @return bool
 	 */
 	public static function isAdminUser($uid) {
-		if (OC_Group::inGroup($uid, 'admin')) {
+		if (OC_Group::inGroup($uid, 'admin') && self::$incognitoMode === false) {
 			return true;
 		}
 		return false;
@@ -343,7 +372,7 @@ class OC_User {
 	 */
 	public static function getUser() {
 		$uid = OC::$session ? OC::$session->get('user_id') : null;
-		if (!is_null($uid)) {
+		if (!is_null($uid) && self::$incognitoMode === false) {
 			return $uid;
 		} else {
 			return false;
@@ -402,6 +431,22 @@ class OC_User {
 	}
 
 	/**
+	 * @brief Check whether user can change his avatar
+	 * @param string $uid The username
+	 * @return bool
+	 *
+	 * Check whether a specified user can change his avatar
+	 */
+	public static function canUserChangeAvatar($uid) {
+		$user = self::getManager()->get($uid);
+		if ($user) {
+			return $user->canChangeAvatar();
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * @brief Check whether user can change his password
 	 * @param string $uid The username
 	 * @return bool
@@ -437,7 +482,7 @@ class OC_User {
 	 * @brief Check if the password is correct
 	 * @param string $uid The username
 	 * @param string $password The password
-	 * @return mixed user id a string on success, false otherwise
+	 * @return string|false user id a string on success, false otherwise
 	 *
 	 * Check if the password is correct without logging in the user
 	 * returns the user id or false
@@ -565,7 +610,7 @@ class OC_User {
 
 	/**
 	 * @brief Returns the first active backend from self::$_usedBackends.
-	 * @return null if no backend active, otherwise OCP\Authentication\IApacheBackend
+	 * @return OCP\Authentication\IApacheBackend|null if no backend active, otherwise OCP\Authentication\IApacheBackend
 	 */
 	private static function findFirstActiveUsedBackend() {
 		foreach (self::$_usedBackends as $backend) {

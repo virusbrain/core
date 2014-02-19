@@ -29,6 +29,9 @@ class File {
 		}
 	}
 
+	/**
+	 * @param string $key
+	 */
 	public function get($key) {
 		$result = null;
 		$proxyStatus = \OC_FileProxy::$enabled;
@@ -41,6 +44,27 @@ class File {
 		return $result;
 	}
 
+	/**
+	 * Returns the size of the stored/cached data
+	 *
+	 * @param $key
+	 * @return int
+	 */
+	public function size($key) {
+		$result = 0;
+		$proxyStatus = \OC_FileProxy::$enabled;
+		\OC_FileProxy::$enabled = false;
+		if ($this->hasKey($key)) {
+			$storage = $this->getStorage();
+			$result = $storage->filesize($key);
+		}
+		\OC_FileProxy::$enabled = $proxyStatus;
+		return $result;
+	}
+
+	/**
+	 * @param string $key
+	 */
 	public function set($key, $value, $ttl=0) {
 		$storage = $this->getStorage();
 		$result = false;
@@ -69,6 +93,9 @@ class File {
 		return false;
 	}
 
+	/**
+	 * @param string $key
+	 */
 	public function remove($key) {
 		$storage = $this->getStorage();
 		if(!$storage) {

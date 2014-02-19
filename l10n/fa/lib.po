@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud\n"
-"Report-Msgid-Bugs-To: http://bugs.owncloud.org/\n"
-"POT-Creation-Date: 2013-10-06 19:07-0400\n"
-"PO-Revision-Date: 2013-10-02 13:21+0000\n"
+"Report-Msgid-Bugs-To: translations@owncloud.org\n"
+"POT-Creation-Date: 2013-12-20 01:55-0500\n"
+"PO-Revision-Date: 2013-12-20 06:23+0000\n"
 "Last-Translator: I Robot <owncloud-bot@tmit.eu>\n"
 "Language-Team: Persian (http://www.transifex.com/projects/p/owncloud/language/fa/)\n"
 "MIME-Version: 1.0\n"
@@ -18,55 +18,51 @@ msgstr ""
 "Language: fa\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: private/app.php:237
+#: private/app.php:243
 #, php-format
 msgid ""
 "App \"%s\" can't be installed because it is not compatible with this version"
 " of ownCloud."
 msgstr ""
 
-#: private/app.php:248
+#: private/app.php:255
 msgid "No app name specified"
 msgstr ""
 
-#: private/app.php:352
+#: private/app.php:360
 msgid "Help"
 msgstr "راه‌نما"
 
-#: private/app.php:365
+#: private/app.php:373
 msgid "Personal"
 msgstr "شخصی"
 
-#: private/app.php:376
+#: private/app.php:384
 msgid "Settings"
 msgstr "تنظیمات"
 
-#: private/app.php:388
+#: private/app.php:396
 msgid "Users"
 msgstr "کاربران"
 
-#: private/app.php:401
+#: private/app.php:409
 msgid "Admin"
 msgstr "مدیر"
 
-#: private/app.php:832
+#: private/app.php:873
 #, php-format
 msgid "Failed to upgrade \"%s\"."
 msgstr ""
 
-#: private/avatar.php:56
-msgid "Custom profile pictures don't work with encryption yet"
-msgstr ""
-
-#: private/avatar.php:64
+#: private/avatar.php:66
 msgid "Unknown filetype"
 msgstr ""
 
-#: private/avatar.php:69
+#: private/avatar.php:71
 msgid "Invalid image"
 msgstr ""
 
-#: private/defaults.php:36
+#: private/defaults.php:34
 msgid "web services under your control"
 msgstr "سرویس های تحت وب در کنترل شما"
 
@@ -75,25 +71,25 @@ msgstr "سرویس های تحت وب در کنترل شما"
 msgid "cannot open \"%s\""
 msgstr ""
 
-#: private/files.php:226
+#: private/files.php:231
 msgid "ZIP download is turned off."
 msgstr "دانلود به صورت فشرده غیر فعال است"
 
-#: private/files.php:227
+#: private/files.php:232
 msgid "Files need to be downloaded one by one."
 msgstr "فایل ها باید به صورت یکی یکی دانلود شوند"
 
-#: private/files.php:228 private/files.php:256
+#: private/files.php:233 private/files.php:261
 msgid "Back to Files"
 msgstr "بازگشت به فایل ها"
 
-#: private/files.php:253
+#: private/files.php:258
 msgid "Selected files too large to generate zip file."
 msgstr "فایل های انتخاب شده بزرگتر از آن هستند که بتوان یک فایل فشرده تولید کرد"
 
-#: private/files.php:254
+#: private/files.php:259
 msgid ""
-"Download the files in smaller chunks, seperately or kindly ask your "
+"Please download the files separately in smaller chunks or kindly ask your "
 "administrator."
 msgstr ""
 
@@ -138,17 +134,17 @@ msgid ""
 "which is not allowed for non shipped apps"
 msgstr ""
 
-#: private/installer.php:152
+#: private/installer.php:159
 msgid ""
 "App can't be installed because the version in info.xml/version is not the "
 "same as the version reported from the app store"
 msgstr ""
 
-#: private/installer.php:162
+#: private/installer.php:169
 msgid "App directory already exists"
 msgstr ""
 
-#: private/installer.php:175
+#: private/installer.php:182
 #, php-format
 msgid "Can't create app folder. Please fix permissions. %s"
 msgstr ""
@@ -177,17 +173,17 @@ msgstr "متن"
 msgid "Images"
 msgstr "تصاویر"
 
-#: private/setup/abstractdatabase.php:22
+#: private/setup/abstractdatabase.php:26
 #, php-format
 msgid "%s enter the database username."
 msgstr "%s نام کاربری پایگاه داده را وارد نمایید."
 
-#: private/setup/abstractdatabase.php:25
+#: private/setup/abstractdatabase.php:29
 #, php-format
 msgid "%s enter the database name."
 msgstr "%s نام پایگاه داده را وارد نمایید."
 
-#: private/setup/abstractdatabase.php:28
+#: private/setup/abstractdatabase.php:32
 #, php-format
 msgid "%s you may not use dots in the database name"
 msgstr "%s شما نباید از نقطه در نام پایگاه داده استفاده نمایید."
@@ -208,11 +204,11 @@ msgid "MySQL username and/or password not valid"
 msgstr "نام کاربری و / یا رمزعبور MySQL  معتبر نیست."
 
 #: private/setup/mysql.php:67 private/setup/oci.php:54
-#: private/setup/oci.php:121 private/setup/oci.php:147
-#: private/setup/oci.php:154 private/setup/oci.php:165
-#: private/setup/oci.php:172 private/setup/oci.php:181
-#: private/setup/oci.php:189 private/setup/oci.php:198
-#: private/setup/oci.php:204 private/setup/postgresql.php:89
+#: private/setup/oci.php:121 private/setup/oci.php:144
+#: private/setup/oci.php:151 private/setup/oci.php:162
+#: private/setup/oci.php:169 private/setup/oci.php:178
+#: private/setup/oci.php:186 private/setup/oci.php:195
+#: private/setup/oci.php:201 private/setup/postgresql.php:89
 #: private/setup/postgresql.php:98 private/setup/postgresql.php:115
 #: private/setup/postgresql.php:125 private/setup/postgresql.php:134
 #, php-format
@@ -220,10 +216,10 @@ msgid "DB Error: \"%s\""
 msgstr "خطای پایگاه داده: \"%s\""
 
 #: private/setup/mysql.php:68 private/setup/oci.php:55
-#: private/setup/oci.php:122 private/setup/oci.php:148
-#: private/setup/oci.php:155 private/setup/oci.php:166
-#: private/setup/oci.php:182 private/setup/oci.php:190
-#: private/setup/oci.php:199 private/setup/postgresql.php:90
+#: private/setup/oci.php:122 private/setup/oci.php:145
+#: private/setup/oci.php:152 private/setup/oci.php:163
+#: private/setup/oci.php:179 private/setup/oci.php:187
+#: private/setup/oci.php:196 private/setup/postgresql.php:90
 #: private/setup/postgresql.php:99 private/setup/postgresql.php:116
 #: private/setup/postgresql.php:126 private/setup/postgresql.php:135
 #, php-format
@@ -256,7 +252,7 @@ msgstr "ارتباط اراکل نمیتواند برقرار باشد."
 msgid "Oracle username and/or password not valid"
 msgstr "نام کاربری و / یا رمزعبور اراکل معتبر نیست."
 
-#: private/setup/oci.php:173 private/setup/oci.php:205
+#: private/setup/oci.php:170 private/setup/oci.php:202
 #, php-format
 msgid "Offending command was: \"%s\", name: %s, password: %s"
 msgstr "دستور متخلف عبارت است از: \"%s\"، نام: \"%s\"، رمزعبور:\"%s\""
@@ -273,13 +269,13 @@ msgstr "یک نام کاربری برای مدیر تنظیم نمایید."
 msgid "Set an admin password."
 msgstr "یک رمزعبور برای مدیر تنظیم نمایید."
 
-#: private/setup.php:184
+#: private/setup.php:195
 msgid ""
 "Your web server is not yet properly setup to allow files synchronization "
 "because the WebDAV interface seems to be broken."
 msgstr "احتمالاً وب سرور شما طوری تنظیم نشده است که اجازه ی همگام سازی فایلها را بدهد زیرا به نظر میرسد رابط WebDAV از کار افتاده است."
 
-#: private/setup.php:185
+#: private/setup.php:196
 #, php-format
 msgid "Please double check the <a href='%s'>installation guides</a>."
 msgstr "لطفاً دوباره <a href='%s'>راهنمای نصب</a>را بررسی کنید."
@@ -289,50 +285,46 @@ msgstr "لطفاً دوباره <a href='%s'>راهنمای نصب</a>را بر�
 msgid "Could not find category \"%s\""
 msgstr "دسته بندی %s یافت نشد"
 
-#: private/template/functions.php:122
+#: private/template/functions.php:130
 msgid "seconds ago"
 msgstr "ثانیه‌ها پیش"
 
-#: private/template/functions.php:123
+#: private/template/functions.php:131
 msgid "%n minute ago"
 msgid_plural "%n minutes ago"
 msgstr[0] ""
 
-#: private/template/functions.php:124
+#: private/template/functions.php:132
 msgid "%n hour ago"
 msgid_plural "%n hours ago"
 msgstr[0] ""
 
-#: private/template/functions.php:125
+#: private/template/functions.php:133
 msgid "today"
 msgstr "امروز"
 
-#: private/template/functions.php:126
+#: private/template/functions.php:134
 msgid "yesterday"
 msgstr "دیروز"
 
-#: private/template/functions.php:128
+#: private/template/functions.php:136
 msgid "%n day go"
 msgid_plural "%n days ago"
 msgstr[0] ""
 
-#: private/template/functions.php:130
+#: private/template/functions.php:138
 msgid "last month"
 msgstr "ماه قبل"
 
-#: private/template/functions.php:131
+#: private/template/functions.php:139
 msgid "%n month ago"
 msgid_plural "%n months ago"
 msgstr[0] ""
 
-#: private/template/functions.php:133
+#: private/template/functions.php:141
 msgid "last year"
 msgstr "سال قبل"
 
-#: private/template/functions.php:134
+#: private/template/functions.php:142
 msgid "years ago"
 msgstr "سال‌های قبل"
-
-#: private/template.php:297
-msgid "Caused by:"
-msgstr ""

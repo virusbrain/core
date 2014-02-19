@@ -5,16 +5,17 @@ namespace OCA\Files;
 class Helper
 {
 	public static function buildFileStorageStatistics($dir) {
-		$l = new \OC_L10N('files');
-		$maxUploadFilesize = \OCP\Util::maxUploadFilesize($dir);
-		$maxHumanFilesize = \OCP\Util::humanFileSize($maxUploadFilesize);
-		$maxHumanFilesize = $l->t('Upload') . ' max. ' . $maxHumanFilesize;
-
 		// information about storage capacities
 		$storageInfo = \OC_Helper::getStorageInfo($dir);
 
+		$l = new \OC_L10N('files');
+		$maxUploadFilesize = \OCP\Util::maxUploadFilesize($dir, $storageInfo['free']);
+		$maxHumanFilesize = \OCP\Util::humanFileSize($maxUploadFilesize);
+		$maxHumanFilesize = $l->t('Upload') . ' max. ' . $maxHumanFilesize;
+
 		return array('uploadMaxFilesize' => $maxUploadFilesize,
 					 'maxHumanFilesize'  => $maxHumanFilesize,
+					 'freeSpace' => $storageInfo['free'],
 					 'usedSpacePercent'  => (int)$storageInfo['relative']);
 	}
 
@@ -30,7 +31,7 @@ class Helper
 					if ($sid[0] === 'shared') {
 						return \OC_Helper::mimetypeIcon('dir-shared');
 					}
-					if ($sid[0] !== 'local') {
+					if ($sid[0] !== 'local' and $sid[0] !== 'home') {
 						return \OC_Helper::mimetypeIcon('dir-external');
 					}
 				}
@@ -40,7 +41,7 @@ class Helper
 
 		if($file['isPreviewAvailable']) {
 			$pathForPreview = $file['directory'] . '/' . $file['name'];
-			return \OC_Helper::previewIcon($pathForPreview);
+			return \OC_Helper::previewIcon($pathForPreview) . '&c=' . $file['etag'];
 		}
 		return \OC_Helper::mimetypeIcon($file['mimetype']);
 	}
@@ -110,27 +111,5 @@ class Helper
 			}
 		}
 		return $breadcrumb;
-	}
-
-	/**
-	 * Returns the numeric permissions for the given directory.
-	 * @param string $dir directory without trailing slash
-	 * @return numeric permissions
-	 */
-	public static function getDirPermissions($dir){
-		$permissions = \OCP\PERMISSION_READ;
-		if (\OC\Files\Filesystem::isCreatable($dir . '/')) {
-			$permissions |= \OCP\PERMISSION_CREATE;
-		}
-		if (\OC\Files\Filesystem::isUpdatable($dir . '/')) {
-			$permissions |= \OCP\PERMISSION_UPDATE;
-		}
-		if (\OC\Files\Filesystem::isDeletable($dir . '/')) {
-			$permissions |= \OCP\PERMISSION_DELETE;
-		}
-		if (\OC\Files\Filesystem::isSharable($dir . '/')) {
-			$permissions |= \OCP\PERMISSION_SHARE;
-		}
-		return $permissions;
 	}
 }

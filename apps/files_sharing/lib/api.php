@@ -31,15 +31,22 @@ class Api {
 	 * @return \OC_OCS_Result share information
 	 */
 	public static function getAllShares($params) {
-
 		// if a file is specified, get the share for this file
 		if (isset($_GET['path'])) {
 			$params['itemSource'] = self::getFileId($_GET['path']);
 			$params['path'] = $_GET['path'];
-			if (isset($_GET['subfiles']) && $_GET['subfiles'] === 'true') {
+			$params['itemType'] = self::getItemType($_GET['path']);
+
+			if ( isset($_GET['reshares']) && $_GET['reshares'] !== 'false' ) {
+				$params['reshares'] = true;
+			} else {
+				$params['reshares'] = false;
+			}
+
+			if (isset($_GET['subfiles']) && $_GET['subfiles'] !== 'false') {
 				return self::getSharesFromFolder($params);
 			}
-			return self::getShare($params);
+			return self::collectShares($params);
 		}
 
 		$share = \OCP\Share::getItemShared('file', null);
@@ -60,27 +67,48 @@ class Api {
 	 */
 	public static function getShare($params) {
 
-		// either the $params already contains a itemSource if we come from
-		//  getAllShare() or we need to translate the shareID to a itemSource
-		if(isset($params['itemSource'])) {
-			$itemSource = $params['itemSource'];
-			$getSpecificShare = true;
-		} else {
-			$s = self::getShareFromId($params['id']);
-			$itemSource = $s['item_source'];
-			$getSpecificShare = false;
-		}
+		$s = self::getShareFromId($params['id']);
+		$params['itemSource'] = $s['item_source'];
+		$params['itemType'] = $s['item_type'];
+		$params['specificShare'] = true;
+
+		return self::collectShares($params);
+	}
+
+	/**
+	 * @brief collect all share information, either of a specific share or all
+	 *        shares for a given path
+	 * @param array $params
+	 * @return \OC_OCS_Result
+	 */
+	private static function collectShares($params) {
+
+		$itemSource = $params['itemSource'];
+		$itemType = $params['itemType'];
+		$getSpecificShare = isset($params['specificShare']) ? $params['specificShare'] : false;
 
 		if ($itemSource !== null) {
-			$shares = \OCP\Share::getItemShared('file', $itemSource);
+			$shares = \OCP\Share::getItemShared($itemType, $itemSource);
+			$receivedFrom = \OCP\Share::getItemSharedWithBySource($itemType, $itemSource);
 			// if a specific share was specified only return this one
-			if ($getSpecificShare === false) {
+			if ($getSpecificShare === true) {
 				foreach ($shares as $share) {
-					if ($share['id'] === (int)$params['id']) {
+					if ($share['id'] === (int) $params['id']) {
 						$shares = array('element' => $share);
 						break;
 					}
 				}
+			}
+
+			// include also reshares in the lists. This means that the result
+			// will contain every user with access to the file.
+			if (isset($params['reshares']) && $params['reshares'] === true) {
+				$shares = self::addReshares($shares, $itemSource);
+			}
+
+			if ($receivedFrom) {
+				$shares['received_from'] = $receivedFrom['uid_owner'];
+				$shares['received_from_displayname'] = \OCP\User::getDisplayName($receivedFrom['uid_owner']);
 			}
 		} else {
 			$shares = null;
@@ -94,6 +122,37 @@ class Api {
 	}
 
 	/**
+	 * @brief add reshares to a array of shares
+	 * @param array $shares array of shares
+	 * @param int $itemSource item source ID
+	 * @return array new shares array which includes reshares
+	 */
+	private static function addReshares($shares, $itemSource) {
+
+		// if there are no shares than there are also no reshares
+		$firstShare = reset($shares);
+		if ($firstShare) {
+			$path = $firstShare['path'];
+		} else {
+			return $shares;
+		}
+
+		$select = '`*PREFIX*share`.`id`, `item_type`, `*PREFIX*share`.`parent`, `share_type`, `share_with`, `file_source`, `path` , `permissions`, `stime`, `expiration`, `token`, `storage`, `mail_send`, `mail_send`';
+		$getReshares = \OC_DB::prepare('SELECT ' . $select . ' FROM `*PREFIX*share` INNER JOIN `*PREFIX*filecache` ON `file_source` = `*PREFIX*filecache`.`fileid` WHERE `*PREFIX*share`.`file_source` = ? AND `*PREFIX*share`.`item_type` IN (\'file\', \'folder\') AND `uid_owner` != ?');
+		$reshares = $getReshares->execute(array($itemSource, \OCP\User::getUser()))->fetchAll();
+
+		foreach ($reshares as $key => $reshare) {
+			if (isset($reshare['share_with']) && $reshare['share_with'] !== '') {
+				$reshares[$key]['share_with_displayname'] = \OCP\User::getDisplayName($reshare['share_with']);
+			}
+			// add correct path to the result
+			$reshares[$key]['path'] = $path;
+		}
+
+		return array_merge($shares, $reshares);
+	}
+
+	/**
 	 * @brief get share from all files in a given folder (non-recursive)
 	 * @param array $params contains 'path' to the folder
 	 * @return \OC_OCS_Result
@@ -103,17 +162,23 @@ class Api {
 		$view = new \OC\Files\View('/'.\OCP\User::getUser().'/files');
 
 		if(!$view->is_dir($path)) {
-			return new \OC_OCS_Result(null, 404, "not a directory");
+			return new \OC_OCS_Result(null, 400, "not a directory");
 		}
 
 		$content = $view->getDirectoryContent($path);
 
 		$result = array();
 		foreach ($content as $file) {
-			$share = \OCP\Share::getItemShared('file', $file['fileid']);
+			// workaround because folders are named 'dir' in this context
+			$itemType = $file['type'] === 'file' ? 'file' : 'folder';
+			$share = \OCP\Share::getItemShared($itemType, $file['fileid']);
+			$receivedFrom =  \OCP\Share::getItemSharedWithBySource($itemType, $file['fileid']);
+			if ($receivedFrom) {
+				$share['received_from'] = $receivedFrom['uid_owner'];
+				$share['received_from_displayname'] = \OCP\User::getDisplayName($receivedFrom['uid_owner']);
+			}
 			if ($share) {
-				$share['filename'] = $file['name'];
-				$result[] = $share;
+				$result = array_merge($result, $share);
 			}
 		}
 
@@ -132,7 +197,6 @@ class Api {
 		if($path === null) {
 			return new \OC_OCS_Result(null, 400, "please specify a file or folder path");
 		}
-
 		$itemSource = self::getFileId($path);
 		$itemType = self::getItemType($path);
 
@@ -154,11 +218,9 @@ class Api {
 				//allow password protection
 				$shareWith = isset($_POST['password']) ? $_POST['password'] : null;
 				//check public link share
-				$publicUploadEnabled = \OC_Appconfig::getValue('core', 'shareapi_allow_public_upload', 'yes');
-				$encryptionEnabled = \OC_App::isEnabled('files_encryption');
-				if(isset($_POST['publicUpload']) &&
-						($encryptionEnabled || $publicUploadEnabled !== 'yes')) {
-					return new \OC_OCS_Result(null, 404, "public upload disabled by the administrator");
+				$publicUploadEnabled = \OC::$server->getAppConfig()->getValue('core', 'shareapi_allow_public_upload', 'yes');
+				if(isset($_POST['publicUpload']) && $publicUploadEnabled !== 'yes') {
+					return new \OC_OCS_Result(null, 403, "public upload disabled by the administrator");
 				}
 				$publicUpload = isset($_POST['publicUpload']) ? $_POST['publicUpload'] : 'false';
 				// read, create, update (7) if public upload is enabled or
@@ -166,7 +228,7 @@ class Api {
 				$permissions = $publicUpload === 'true' ? 7 : 1;
 				break;
 			default:
-				return new \OC_OCS_Result(null, 404, "unknown share type");
+				return new \OC_OCS_Result(null, 400, "unknown share type");
 		}
 
 		try	{
@@ -178,13 +240,13 @@ class Api {
 					$permissions
 					);
 		} catch (\Exception $e) {
-			return new \OC_OCS_Result(null, 404, $e->getMessage());
+			return new \OC_OCS_Result(null, 403, $e->getMessage());
 		}
 
 		if ($token) {
 			$data = array();
 			$data['id'] = 'unknown';
-			$shares = \OCP\Share::getItemShared('file', $itemSource);
+			$shares = \OCP\Share::getItemShared($itemType, $itemSource);
 			if(is_string($token)) { //public link share
 				foreach ($shares as $share) {
 					if ($share['token'] === $token) {
@@ -255,12 +317,9 @@ class Api {
 		$shareType = $share['share_type'];
 		$permissions = isset($params['_put']['permissions']) ? (int)$params['_put']['permissions'] : null;
 
-		$publicUploadStatus = \OC_Appconfig::getValue('core', 'shareapi_allow_public_upload', 'yes');
-		$encryptionEnabled = \OC_App::isEnabled('files_encryption');
-		$publicUploadEnabled = false;
-		if(!$encryptionEnabled && $publicUploadStatus === 'yes') {
-			$publicUploadEnabled = true;
-		}
+		$publicUploadStatus = \OC::$server->getAppConfig()->getValue('core', 'shareapi_allow_public_upload', 'yes');
+		$publicUploadEnabled = ($publicUploadStatus === 'yes') ? true : false;
+
 
 		// only change permissions for public shares if public upload is enabled
 		// and we want to set permissions to 1 (read only) or 7 (allow upload)
@@ -297,10 +356,9 @@ class Api {
 	 */
 	private static function updatePublicUpload($share, $params) {
 
-		$publicUploadEnabled = \OC_Appconfig::getValue('core', 'shareapi_allow_public_upload', 'yes');
-		$encryptionEnabled = \OC_App::isEnabled('files_encryption');
-		if($encryptionEnabled || $publicUploadEnabled !== 'yes') {
-			return new \OC_OCS_Result(null, 404, "public upload disabled by the administrator");
+		$publicUploadEnabled = \OC::$server->getAppConfig()->getValue('core', 'shareapi_allow_public_upload', 'yes');
+		if($publicUploadEnabled !== 'yes') {
+			return new \OC_OCS_Result(null, 403, "public upload disabled by the administrator");
 		}
 
 		if ($share['item_type'] !== 'folder' ||
@@ -414,7 +472,6 @@ class Api {
 
 		$view = new \OC\Files\View('/'.\OCP\User::getUser().'/files');
 		$fileId = null;
-
 		$fileInfo = $view->getFileInfo($path);
 		if ($fileInfo) {
 			$fileId = $fileInfo['fileid'];

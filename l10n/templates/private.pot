@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ownCloud Core 6.0.0\n"
 "Report-Msgid-Bugs-To: translations@owncloud.org\n"
-"POT-Creation-Date: 2013-10-07 12:17-0400\n"
+"POT-Creation-Date: 2014-01-08 01:55-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,55 +18,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: app.php:237
+#: app.php:245
 #, php-format
 msgid ""
 "App \"%s\" can't be installed because it is not compatible with this version "
 "of ownCloud."
 msgstr ""
 
-#: app.php:248
+#: app.php:257
 msgid "No app name specified"
 msgstr ""
 
-#: app.php:352
+#: app.php:362
 msgid "Help"
 msgstr ""
 
-#: app.php:365
+#: app.php:375
 msgid "Personal"
 msgstr ""
 
-#: app.php:376
+#: app.php:386
 msgid "Settings"
 msgstr ""
 
-#: app.php:388
+#: app.php:398
 msgid "Users"
 msgstr ""
 
-#: app.php:401
+#: app.php:411
 msgid "Admin"
 msgstr ""
 
-#: app.php:832
+#: app.php:875
 #, php-format
 msgid "Failed to upgrade \"%s\"."
 msgstr ""
 
-#: avatar.php:56
-msgid "Custom profile pictures don't work with encryption yet"
-msgstr ""
-
-#: avatar.php:64
+#: avatar.php:66
 msgid "Unknown filetype"
 msgstr ""
 
-#: avatar.php:69
+#: avatar.php:71
 msgid "Invalid image"
 msgstr ""
 
-#: defaults.php:36
+#: defaults.php:34
 msgid "web services under your control"
 msgstr ""
 
@@ -93,7 +89,7 @@ msgstr ""
 
 #: files.php:254
 msgid ""
-"Download the files in smaller chunks, seperately or kindly ask your "
+"Please download the files separately in smaller chunks or kindly ask your "
 "administrator."
 msgstr ""
 
@@ -138,17 +134,17 @@ msgid ""
 "which is not allowed for non shipped apps"
 msgstr ""
 
-#: installer.php:152
+#: installer.php:159
 msgid ""
 "App can't be installed because the version in info.xml/version is not the "
 "same as the version reported from the app store"
 msgstr ""
 
-#: installer.php:162
+#: installer.php:169
 msgid "App directory already exists"
 msgstr ""
 
-#: installer.php:175
+#: installer.php:182
 #, php-format
 msgid "Can't create app folder. Please fix permissions. %s"
 msgstr ""
@@ -177,17 +173,17 @@ msgstr ""
 msgid "Images"
 msgstr ""
 
-#: setup/abstractdatabase.php:22
+#: setup/abstractdatabase.php:26
 #, php-format
 msgid "%s enter the database username."
 msgstr ""
 
-#: setup/abstractdatabase.php:25
+#: setup/abstractdatabase.php:29
 #, php-format
 msgid "%s enter the database name."
 msgstr ""
 
-#: setup/abstractdatabase.php:28
+#: setup/abstractdatabase.php:32
 #, php-format
 msgid "%s you may not use dots in the database name"
 msgstr ""
@@ -206,18 +202,18 @@ msgstr ""
 msgid "MySQL username and/or password not valid"
 msgstr ""
 
-#: setup/mysql.php:67 setup/oci.php:54 setup/oci.php:121 setup/oci.php:147
-#: setup/oci.php:154 setup/oci.php:165 setup/oci.php:172 setup/oci.php:181
-#: setup/oci.php:189 setup/oci.php:198 setup/oci.php:204
+#: setup/mysql.php:67 setup/oci.php:54 setup/oci.php:121 setup/oci.php:144
+#: setup/oci.php:151 setup/oci.php:162 setup/oci.php:169 setup/oci.php:178
+#: setup/oci.php:186 setup/oci.php:195 setup/oci.php:201
 #: setup/postgresql.php:89 setup/postgresql.php:98 setup/postgresql.php:115
 #: setup/postgresql.php:125 setup/postgresql.php:134
 #, php-format
 msgid "DB Error: \"%s\""
 msgstr ""
 
-#: setup/mysql.php:68 setup/oci.php:55 setup/oci.php:122 setup/oci.php:148
-#: setup/oci.php:155 setup/oci.php:166 setup/oci.php:182 setup/oci.php:190
-#: setup/oci.php:199 setup/postgresql.php:90 setup/postgresql.php:99
+#: setup/mysql.php:68 setup/oci.php:55 setup/oci.php:122 setup/oci.php:145
+#: setup/oci.php:152 setup/oci.php:163 setup/oci.php:179 setup/oci.php:187
+#: setup/oci.php:196 setup/postgresql.php:90 setup/postgresql.php:99
 #: setup/postgresql.php:116 setup/postgresql.php:126 setup/postgresql.php:135
 #, php-format
 msgid "Offending command was: \"%s\""
@@ -249,7 +245,7 @@ msgstr ""
 msgid "Oracle username and/or password not valid"
 msgstr ""
 
-#: setup/oci.php:173 setup/oci.php:205
+#: setup/oci.php:170 setup/oci.php:202
 #, php-format
 msgid "Offending command was: \"%s\", name: %s, password: %s"
 msgstr ""
@@ -266,13 +262,13 @@ msgstr ""
 msgid "Set an admin password."
 msgstr ""
 
-#: setup.php:184
+#: setup.php:195
 msgid ""
 "Your web server is not yet properly setup to allow files synchronization "
 "because the WebDAV interface seems to be broken."
 msgstr ""
 
-#: setup.php:185
+#: setup.php:196
 #, php-format
 msgid "Please double check the <a href='%s'>installation guides</a>."
 msgstr ""
@@ -282,54 +278,50 @@ msgstr ""
 msgid "Could not find category \"%s\""
 msgstr ""
 
-#: template/functions.php:122
+#: template/functions.php:130
 msgid "seconds ago"
 msgstr ""
 
-#: template/functions.php:123
+#: template/functions.php:131
 msgid "%n minute ago"
 msgid_plural "%n minutes ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: template/functions.php:124
+#: template/functions.php:132
 msgid "%n hour ago"
 msgid_plural "%n hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: template/functions.php:125
+#: template/functions.php:133
 msgid "today"
 msgstr ""
 
-#: template/functions.php:126
+#: template/functions.php:134
 msgid "yesterday"
 msgstr ""
 
-#: template/functions.php:128
+#: template/functions.php:136
 msgid "%n day go"
 msgid_plural "%n days ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: template/functions.php:130
+#: template/functions.php:138
 msgid "last month"
 msgstr ""
 
-#: template/functions.php:131
+#: template/functions.php:139
 msgid "%n month ago"
 msgid_plural "%n months ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: template/functions.php:133
+#: template/functions.php:141
 msgid "last year"
 msgstr ""
 
-#: template/functions.php:134
+#: template/functions.php:142
 msgid "years ago"
-msgstr ""
-
-#: template.php:297
-msgid "Caused by:"
 msgstr ""

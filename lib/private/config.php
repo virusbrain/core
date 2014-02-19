@@ -50,7 +50,7 @@ class Config {
 	protected $debugMode;
 
 	/**
-	 * @param $configDir path to the config dir, needs to end with '/'
+	 * @param string $configDir path to the config dir, needs to end with '/'
 	 */
 	public function __construct($configDir) {
 		$this->configDir = $configDir;
@@ -77,7 +77,7 @@ class Config {
 	/**
 	 * @brief Gets a value from config.php
 	 * @param string $key key
-	 * @param string $default = null default value
+	 * @param mixed $default = null default value
 	 * @return string the value or $default
 	 *
 	 * This function gets the value from config.php. If it does not exist,
@@ -94,7 +94,7 @@ class Config {
 	/**
 	 * @brief Sets a value
 	 * @param string $key key
-	 * @param string $value value
+	 * @param mixed $value value
 	 *
 	 * This function sets the value and writes the config.php.
 	 *
@@ -172,7 +172,7 @@ class Config {
 		$result = @file_put_contents($this->configFilename, $content);
 		if (!$result) {
 			$defaults = new \OC_Defaults;
-			$url = $defaults->getDocBaseUrl() . '/server/5.0/admin_manual/installation/installation_source.html#set-the-directory-permissions';
+			$url = \OC_Helper::linkToDocs('admin-dir-permissions');
 			throw new HintException(
 				"Can't write into config directory!",
 				'This can usually be fixed by '

@@ -49,6 +49,10 @@ class LDAP implements ILDAPWrapper {
 										$isCritical, $cookie);
 	}
 
+	public function countEntries($link, $result) {
+		return $this->invokeLDAPMethod('count_entries', $link, $result);
+	}
+
 	public function errno($link) {
 		return $this->invokeLDAPMethod('errno', $link);
 	}
@@ -65,21 +69,29 @@ class LDAP implements ILDAPWrapper {
 		return $this->invokeLDAPMethod('get_attributes', $link, $result);
 	}
 
+	public function getDN($link, $result) {
+		return $this->invokeLDAPMethod('get_dn', $link, $result);
+	}
+
 	public function getEntries($link, $result) {
 		return $this->invokeLDAPMethod('get_entries', $link, $result);
+	}
+
+	public function nextEntry($link, $result) {
+		return $this->invokeLDAPMethod('next_entry', $link, $result);
 	}
 
 	public function read($link, $baseDN, $filter, $attr) {
 		return $this->invokeLDAPMethod('read', $link, $baseDN, $filter, $attr);
 	}
 
-	public function search($link, $baseDN, $filter, $attr) {
-		return $this->invokeLDAPMethod('search', $link, $baseDN,
-										$filter, $attr);
+	public function search($link, $baseDN, $filter, $attr, $attrsonly = 0, $limit = 0) {
+		return $this->invokeLDAPMethod('search', $link, $baseDN, $filter,
+										$attr, $attrsonly, $limit);
 	}
 
 	public function setOption($link, $option, $value) {
-		$this->invokeLDAPMethod('set_option', $link, $option, $value);
+		return $this->invokeLDAPMethod('set_option', $link, $option, $value);
 	}
 
 	public function sort($link, $result, $sortfilter) {
@@ -96,7 +108,7 @@ class LDAP implements ILDAPWrapper {
 
 	/**
 	 * @brief Checks whether the server supports LDAP
-	 * @return true if it the case, false otherwise
+	 * @return boolean if it the case, false otherwise
 	 * */
 	public function areLDAPFunctionsAvailable() {
 		return function_exists('ldap_connect');
@@ -104,7 +116,7 @@ class LDAP implements ILDAPWrapper {
 
 	/**
 	 * @brief Checks whether PHP supports LDAP Paged Results
-	 * @return true if it the case, false otherwise
+	 * @return boolean if it the case, false otherwise
 	 * */
 	public function hasPagedResultSupport() {
 		$hasSupport = function_exists('ldap_control_paged_result')
@@ -115,7 +127,7 @@ class LDAP implements ILDAPWrapper {
 	/**
 	 * @brief Checks whether the submitted parameter is a resource
 	 * @param $resource the resource variable to check
-	 * @return true if it is a resource, false otherwise
+	 * @return boolean if it is a resource, false otherwise
 	 */
 	public function isResource($resource) {
 		return is_resource($resource);
@@ -132,6 +144,9 @@ class LDAP implements ILDAPWrapper {
 		}
 	}
 
+	/**
+	 * @param string $functionName
+	 */
 	private function preFunctionCall($functionName, $args) {
 		$this->curFunc = $functionName;
 		$this->curArgs = $args;

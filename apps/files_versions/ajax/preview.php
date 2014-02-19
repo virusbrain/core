@@ -19,19 +19,21 @@ $scalingUp = array_key_exists('scalingup', $_GET) ? (bool) $_GET['scalingup'] : 
 
 if($file === '' && $version === '') {
 	\OC_Response::setStatus(400); //400 Bad Request
-	\OC_Log::write('core-preview', 'No file parameter was passed', \OC_Log::DEBUG);
+	\OC_Log::write('versions-preview', 'No file parameter was passed', \OC_Log::DEBUG);
 	exit;
 }
 
 if($maxX === 0 || $maxY === 0) {
 	\OC_Response::setStatus(400); //400 Bad Request
-	\OC_Log::write('core-preview', 'x and/or y set to 0', \OC_Log::DEBUG);
+	\OC_Log::write('versions-preview', 'x and/or y set to 0', \OC_Log::DEBUG);
 	exit;
 }
 
-try{
-	$preview = new \OC\Preview(\OC_User::getUser(), 'files_versions');
-	$preview->setFile($file.'.v'.$version);
+try {
+	list($user, $file) = \OCA\Files_Versions\Storage::getUidAndFilename($file);
+	$preview = new \OC\Preview($user, 'files_versions', $file.'.v'.$version);
+	$mimetype = \OC_Helper::getFileNameMimeType($file);
+	$preview->setMimetype($mimetype);
 	$preview->setMaxX($maxX);
 	$preview->setMaxY($maxY);
 	$preview->setScalingUp($scalingUp);

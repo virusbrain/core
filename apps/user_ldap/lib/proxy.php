@@ -54,18 +54,22 @@ abstract class Proxy {
 		return 'group-'.$gid.'-lastSeenOn';
 	}
 
-	abstract protected function callOnLastSeenOn($id, $method, $parameters);
+	/**
+	 * @param boolean $passOnWhen
+	 */
+	abstract protected function callOnLastSeenOn($id, $method, $parameters, $passOnWhen);
 	abstract protected function walkBackends($id, $method, $parameters);
 
 	/**
 	 * @brief Takes care of the request to the User backend
 	 * @param $uid string, the uid connected to the request
-	 * @param $method string, the method of the user backend that shall be called
+	 * @param string $method string, the method of the user backend that shall be called
 	 * @param $parameters an array of parameters to be passed
 	 * @return mixed, the result of the specified method
 	 */
-	protected function handleRequest($id, $method, $parameters) {
-		if(!$result = $this->callOnLastSeenOn($id,  $method, $parameters)) {
+	protected function handleRequest($id, $method, $parameters, $passOnWhen = false) {
+		$result = $this->callOnLastSeenOn($id,  $method, $parameters, $passOnWhen);
+		if($result === $passOnWhen) {
 			$result = $this->walkBackends($id, $method, $parameters);
 		}
 		return $result;
@@ -79,6 +83,9 @@ abstract class Proxy {
 		return $prefix.md5($key);
 	}
 
+	/**
+	 * @param string $key
+	 */
 	public function getFromCache($key) {
 		if(!$this->isCached($key)) {
 			return null;
@@ -93,6 +100,9 @@ abstract class Proxy {
 		return $this->cache->hasKey($key);
 	}
 
+	/**
+	 * @param string $key
+	 */
 	public function writeToCache($key, $value) {
 		$key   = $this->getCacheKey($key);
 		$value = base64_encode(serialize($value));
