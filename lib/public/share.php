@@ -218,8 +218,8 @@ class Share extends \OC\Share\Constants {
 	 * @internal param \OCP\CRUDS $int permissions
 	 * @return bool|string Returns true on success or false on failure, Returns token on success for links
 	 */
-	public static function shareItem($itemType, $itemSource, $shareType, $shareWith, $permissions, $itemSourceName = null) {
-		return \OC\Share\Share::shareItem($itemType, $itemSource, $shareType, $shareWith, $permissions, $itemSourceName);
+	public static function shareItem($itemType, $itemSource, $shareType, $shareWith, $permissions, $itemSourceName = null, \DateTime $expirationDate = null) {
+		return \OC\Share\Share::shareItem($itemType, $itemSource, $shareType, $shareWith, $permissions, $itemSourceName, $expirationDate);
 	}
 
 	/**
