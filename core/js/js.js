@@ -583,6 +583,7 @@ OC.Notification={
 				callback.call();
 			}
 			$('#notification').empty();
+			console.log('OCNO EMPTY');
 			if(OC.Notification.queuedNotifications.length > 0){
 				OC.Notification.showHtml(OC.Notification.queuedNotifications[0]);
 				OC.Notification.queuedNotifications.shift();
@@ -593,6 +594,7 @@ OC.Notification={
 		if(($('#notification').filter('span.undo').length == 1) || OC.Notification.isHidden()){
 			$('#notification').html(html);
 			$('#notification').fadeIn().css("display","inline");
+			console.log('OCNO DISPLAY');
 		}else{
 			OC.Notification.queuedNotifications.push(html);
 		}
