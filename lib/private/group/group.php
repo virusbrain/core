@@ -186,11 +186,7 @@ class Group {
 	 */
 	public function searchDisplayName($search, $limit = null, $offset = null) {
 		foreach ($this->backends as $backend) {
-			if ($backend->implementsActions(OC_GROUP_BACKEND_GET_DISPLAYNAME)) {
-				$userIds = array_keys($backend->displayNamesInGroup($this->gid, $search, $limit, $offset));
-			} else {
-				$userIds = $backend->usersInGroup($this->gid, $search, $limit, $offset);
-			}
+			$userIds = $backend->usersInGroup($this->gid, $search, $limit, $offset);
 			if (!is_null($limit)) {
 				$limit -= count($userIds);
 			}
