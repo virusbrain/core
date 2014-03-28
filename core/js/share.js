@@ -140,12 +140,15 @@ OC.Share={
 		// Add a fallback for old share() calls without expirationDate.
 		// We should remove this in a later version,
 		// after the Apps have been updated.
-		if (typeof callback === 'undefined' && typeof expirationDate === 'function') {
+		if (typeof callback === 'undefined' &&
+			typeof expirationDate === 'function') {
 			callback = expirationDate;
 			expirationDate = '';
-			console.warn("Call to 'OC.Share.share()' with too few arguments. "
-				+ "'expirationDate' was assumed to be 'callback'. "
-				+ "Please revisit the call and fix the list of arguments.");
+			console.warn(
+				"Call to 'OC.Share.share()' with too few arguments. " +
+				"'expirationDate' was assumed to be 'callback'. " +
+				"Please revisit the call and fix the list of arguments."
+			);
 		}
 
 		$.post(OC.filePath('core', 'ajax', 'share.php'),
