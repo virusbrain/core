@@ -148,6 +148,12 @@ class URLGenerator implements IURLGenerator {
 	 */
 	public function getAbsoluteURL($url) {
 		$separator = $url[0] === '/' ? '' : '/';
-		return \OC_Request::serverProtocol() . '://' . \OC_Request::serverHost() . $separator . $url;
+
+		// The ownCloud web root can already be prepended.
+		$webRoot = substr($url, 0, strlen(\OC::$WEBROOT)) === \OC::$WEBROOT
+			? ''
+			: \OC::$WEBROOT;
+
+		return \OC_Request::serverProtocol() . '://' . \OC_Request::serverHost(). $webRoot . $separator . $url;
 	}
 }
