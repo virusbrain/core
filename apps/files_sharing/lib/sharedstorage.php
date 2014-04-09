@@ -201,7 +201,7 @@ class Shared extends \OC\Files\Storage\Common {
 
 	public function isCreatable($path) {
 		if ($path == '') {
-			return ($this->getPermissions($this->getMountPoint()) & \OCP\PERMISSION_CREATE);
+			$path = $this->mountPoint;
 		}
 		return ($this->getPermissions($path) & \OCP\PERMISSION_CREATE);
 	}
@@ -212,21 +212,21 @@ class Shared extends \OC\Files\Storage\Common {
 
 	public function isUpdatable($path) {
 		if ($path == '') {
-			return false;
+			$path = $this->mountPoint;
 		}
 		return ($this->getPermissions($path) & \OCP\PERMISSION_UPDATE);
 	}
 
 	public function isDeletable($path) {
 		if ($path == '') {
-			return true;
+			$path = $this->mountPoint;
 		}
 		return ($this->getPermissions($path) & \OCP\PERMISSION_DELETE);
 	}
 
 	public function isSharable($path) {
 		if ($path == '') {
-			return false;
+			$path = $this->mountPoint;
 		}
 		return ($this->getPermissions($path) & \OCP\PERMISSION_SHARE);
 	}
@@ -463,7 +463,7 @@ class Shared extends \OC\Files\Storage\Common {
 
 	public function free_space($path) {
 		if ($path == '') {
-			return \OC\Files\SPACE_UNKNOWN;
+			$path = $this->mountPoint;
 		}
 		$source = $this->getSourcePath($path);
 		if ($source) {
@@ -556,7 +556,7 @@ class Shared extends \OC\Files\Storage\Common {
 
 	public function getOwner($path) {
 		if ($path == '') {
-			return false;
+			$path = $this->mountPoint;
 		}
 		$source = $this->getFile($path);
 		if ($source) {
@@ -567,7 +567,7 @@ class Shared extends \OC\Files\Storage\Common {
 
 	public function getETag($path) {
 		if ($path == '') {
-			return parent::getETag($path);
+			$path = $this->mountPoint;
 		}
 		if ($source = $this->getSourcePath($path)) {
 			list($storage, $internalPath) = \OC\Files\Filesystem::resolvePath($source);
