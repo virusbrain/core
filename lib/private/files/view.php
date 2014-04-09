@@ -291,6 +291,15 @@ class View {
 								Filesystem::signal_param_run => &$run
 							)
 						);
+					} else {
+						\OC_Hook::emit(
+							Filesystem::CLASSNAME,
+							Filesystem::signal_update,
+							array(
+								Filesystem::signal_param_path => $this->getHookPath($path),
+								Filesystem::signal_param_run => &$run,
+							)
+						);
 					}
 					\OC_Hook::emit(
 						Filesystem::CLASSNAME,
@@ -317,6 +326,12 @@ class View {
 							\OC_Hook::emit(
 								Filesystem::CLASSNAME,
 								Filesystem::signal_post_create,
+								array(Filesystem::signal_param_path => $this->getHookPath($path))
+							);
+						} else {
+							\OC_Hook::emit(
+								Filesystem::CLASSNAME,
+								Filesystem::signal_post_update,
 								array(Filesystem::signal_param_path => $this->getHookPath($path))
 							);
 						}
@@ -507,6 +522,15 @@ class View {
 							Filesystem::signal_param_run => &$run
 						)
 					);
+				} elseif ($run) {
+					\OC_Hook::emit(
+						Filesystem::CLASSNAME,
+						Filesystem::signal_update,
+						array(
+							Filesystem::signal_param_path => $this->getHookPath($path2),
+							Filesystem::signal_param_run => &$run,
+						)
+					);
 				}
 				if ($run) {
 					\OC_Hook::emit(
@@ -561,6 +585,12 @@ class View {
 						\OC_Hook::emit(
 							Filesystem::CLASSNAME,
 							Filesystem::signal_post_create,
+							array(Filesystem::signal_param_path => $this->getHookPath($path2))
+						);
+					} else {
+						\OC_Hook::emit(
+							Filesystem::CLASSNAME,
+							Filesystem::signal_post_update,
 							array(Filesystem::signal_param_path => $this->getHookPath($path2))
 						);
 					}
