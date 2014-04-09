@@ -60,11 +60,11 @@
 <table id="filestable" data-allow-public-upload="<?php p($_['publicUploadEnabled'])?>" data-preview-x="36" data-preview-y="36">
 	<thead>
 		<tr>
-			<th class="hidden" id='headerName' data-sort="name">
+			<th class="hidden column-name" id='headerName'>
 				<div id="headerName-container">
 					<input type="checkbox" id="select_all" />
 					<label for="select_all"></label>
-					<span class="name"><?php p($l->t( 'Name' )); ?></span>
+					<a class="name sort" data-sort="name"><span><?php p($l->t( 'Name' )); ?></span><span class="sort-indicator"></span></a>
 					<span id="selectedActionsList" class="selectedActions">
 						<?php if($_['allowZipDownload']) : ?>
 							<a href="" class="download">
@@ -76,9 +76,9 @@
 					</span>
 				</div>
 			</th>
-			<th class="hidden" id="headerSize" data-sort="size"><?php p($l->t('Size')); ?></th>
-			<th class="hidden" id="headerDate" data-sort="mtime">
-				<span id="modified"><?php p($l->t( 'Modified' )); ?></span>
+			<th class="hidden column-size" id="headerSize"><a class="size sort" data-sort="size"><span><?php p($l->t('Size')); ?></span><span class="sort-indicator"></span></a></th>
+			<th class="hidden column-mtime" id="headerDate">
+				<a id="modified" data-sort="mtime"><span><?php p($l->t( 'Modified' )); ?></span><span class="sort-indicator"></span></a>
 				<?php if ($_['permissions'] & OCP\PERMISSION_DELETE): ?>
 					<span class="selectedActions"><a href="" class="delete-selected">
 						<?php p($l->t('Delete'))?>

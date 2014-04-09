@@ -567,9 +567,9 @@ function procesSelection() {
 		return el.type==='dir';
 	});
 	if (selectedFiles.length === 0 && selectedFolders.length === 0) {
-		$('#headerName span.name').text(t('files','Name'));
-		$('#headerSize').text(t('files','Size'));
-		$('#modified').text(t('files','Modified'));
+		$('#headerName a.name>span:first').text(t('files','Name'));
+		$('#headerSize a>span:first').text(t('files','Size'));
+		$('#modified a>span:first').text(t('files','Modified'));
 		$('table').removeClass('multiselect');
 		$('.selectedActions').hide();
 		$('#select_all').removeAttr('checked');
@@ -583,7 +583,7 @@ function procesSelection() {
 		for(var i=0; i<selectedFolders.length; i++) {
 			totalSize+=selectedFolders[i].size;
 		}
-		$('#headerSize').text(humanFileSize(totalSize));
+		$('#headerSize a>span:first').text(humanFileSize(totalSize));
 		var selection = '';
 		if (selectedFolders.length > 0) {
 			selection += n('files', '%n folder', '%n folders', selectedFolders.length);
@@ -594,8 +594,8 @@ function procesSelection() {
 		if (selectedFiles.length>0) {
 			selection += n('files', '%n file', '%n files', selectedFiles.length);
 		}
-		$('#headerName span.name').text(selection);
-		$('#modified').text('');
+		$('#headerName a.name>span:first').text(selection);
+		$('#modified a>span:first').text('');
 		$('table').addClass('multiselect');
 	}
 }

@@ -86,8 +86,8 @@ window.FileList = {
 	_onClickHeader: function(e) {
 		var $target = $(e.target);
 		var sort;
-		if (!$target.is('th')) {
-			$target = $target.closest('th');
+		if (!$target.is('a')) {
+			$target = $target.closest('a');
 		}
 		sort = $target.attr('data-sort');
 		if (sort) {
@@ -97,6 +97,7 @@ window.FileList = {
 			else {
 				FileList.setSort(sort, 'asc');
 			}
+			FileList.reload();
 		}
 	},
 
@@ -475,8 +476,9 @@ window.FileList = {
 	setSort: function(sort, direction) {
 		this._sort = sort;
 		this._sortDirection = (direction === 'desc')?'desc':'asc';
-		this._sortComparator = this._sortComparators[sort] || this._sortComparators['name'];
-		this.reload();
+		this._sortComparator = this._sortComparators[sort] || this._sortComparators.name;
+		this.$el.find('thead th .sort-indicator').addClass('hidden');
+		this.$el.find('thead th.column-' + sort + ' .sort-indicator').removeClass('hidden').text(direction==='desc' ? '^' : 'v');
 	},
 	/**
 	 * @brief Reloads the file list using ajax call
@@ -1276,6 +1278,7 @@ $(document).ready(function() {
 			targetDir = parseCurrentDirFromUrl();
 		}
 		if (targetDir) {
+			FileList.setSort('name', 'asc');
 			FileList.changeDirectory(targetDir, false);
 		}
 	};
